@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DomFix - Profesionální rekonstrukce</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'brand-pink': '#ff4d8d',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Styles -->
+    <style type="text/css">
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ff4d8d;
+            border-radius: 10px;
+        }
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .glass-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .selection\:bg-brand-pink::selection {
+            background-color: #ff4d8d;
+            color: white;
+        }
+    </style>
+
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Framer Motion -->
+    <script src="https://unpkg.com/framer-motion@11.0.8/dist/framer-motion.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide-react@latest"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, AnimatePresence } = FramerMotion;
+        const { 
+            Check, 
+            Mail,
+            Instagram, 
+            Phone, 
+            Send, 
+            Twitter, 
+            Clock, 
+            ShieldCheck, 
+            MapPin, 
+            Users, 
+            HeartHandshake, 
+            Trophy,
+            ChevronDown,
+            X,
+            Menu,
+            Home
+        } = LucideReact;
+
+        function App() {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+            const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+            const [calcM2, setCalcM2] = useState(50);
+            const [calcPackage, setCalcPackage] = useState(200);
+
+            const packages = [
+                { name: 'LITE základní', price: 200 },
+                { name: 'FULL základní', price: 320 },
+                { name: 'LITE na klíč', price: 450 },
+                { name: 'FULL na klíč', price: 550 },
+            ];
+
+            useEffect(() => {
+                const timer = setTimeout(() => {
+                    setIsModalOpen(true);
+                }, 15000); // Show popup after 15 seconds
+                return () => clearTimeout(timer);
+            }, []);
+
+            const scrollToSection = (id) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const offset = 100; // Offset for fixed header
+                    const bodyRect = document.body.getBoundingClientRect().top;
+                    const elementRect = element.getBoundingClientRect().top;
+                    const elementPosition = elementRect - bodyRect;
+                    const offsetPosition = elementPosition - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            };
+
+            return (
+                <div className="min-h-screen bg-[#121212] text-white font-sans selection:bg-brand-pink selection:text-white pt-16 lg:pt-[152px]">
+                    {/* Navigation */}
+                    <nav className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
+                        {/* Top Info Bar - Desktop Only */}
+                        <div className="hidden lg:grid grid-cols-[1.5fr_0.5fr_1.5fr_1.5fr_0.5fr] border-b border-white/10 h-24">
+                            {/* Logo & Tagline */}
+                            <div className="flex items-center px-8 border-r border-white/10 gap-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-12 h-12 bg-white flex items-center justify-center rounded-lg shrink-0 shadow-lg shadow-white/5">
+                                            <span className="text-black font-extrabold text-2xl">DF</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="font-bold text-2xl tracking-tighter leading-none">DomFix</span>
+                                        <span className="text-[10px] text-brand-pink font-bold uppercase tracking-[0.2em] mt-1.5">Rekonstrukce</span>
+                                    </div>
+                                </div>
+                                <div className="h-12 w-[1px] bg-white/10"></div>
+                                <p className="text-[11px] text-zinc-400 font-medium leading-relaxed max-w-[160px] italic">
+                                    Rekonstrukce bytů, domů, kanceláří "na klíč"
+                                </p>
+                            </div>
+
+                            {/* Social */}
+                            <div className="flex items-center justify-center border-r border-white/10">
+                                <a href="https://instagram.com/domfix.cz" target="_blank" rel="noreferrer" className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white hover:bg-brand-pink transition-all">
+                                    <Instagram className="w-6 h-6" />
+                                </a>
+                            </div>
+
+                            {/* Contact Info */}
+                            <div className="flex items-center px-8 border-r border-white/10 gap-5">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                                    <Phone className="w-5 h-5 text-white" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <a href="tel:+420602882855" className="text-base font-bold text-white hover:text-brand-pink transition-colors tracking-tight">+420 602 882 855</a>
+                                    <a href="mailto:domfix.cz@gmail.com" className="text-xs text-zinc-400 hover:text-white transition-colors font-medium">domfix.cz@gmail.com</a>
+                                </div>
+                            </div>
+
+                            {/* Location & Hours */}
+                            <div className="flex items-center px-8 border-r border-white/10 gap-5">
+                                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                                    <MapPin className="w-5 h-5 text-white" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-base font-bold text-white tracking-tight">Praha a okolí</span>
+                                    <span className="text-[11px] text-brand-pink font-bold uppercase tracking-wider">Po-So 8:00 – 20:00</span>
+                                </div>
+                            </div>
+
+                            {/* Menu Toggle / Action */}
+                            <div className="flex items-center justify-center">
+                                <button 
+                                    onClick={() => setIsCalculatorOpen(true)}
+                                    className="w-14 h-14 rounded-full bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center hover:bg-brand-pink transition-all group"
+                                    title="Kalkulačka"
+                                >
+                                    <Trophy className="w-7 h-7 text-brand-pink group-hover:text-black transition-colors" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Main Nav - Mobile & Sticky Desktop */}
+                        <div className="max-w-7xl mx-auto px-6 h-16 lg:h-14 flex items-center justify-between">
+                            <div className="flex items-center gap-2 lg:hidden">
+                                <div className="w-8 h-8 bg-white flex items-center justify-center rounded-lg">
+                                    <span className="text-black font-bold text-lg">DF</span>
+                                </div>
+                                <span className="font-bold text-lg tracking-tight">DomFix</span>
+                            </div>
+                            
+                            <div className="hidden lg:flex items-center gap-8 mx-auto">
+                                <button onClick={() => scrollToSection('about')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors">O nás</button>
+                                <button onClick={() => scrollToSection('services')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors">Služby</button>
+                                <button onClick={() => scrollToSection('contact')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors">Kontakt</button>
+                            </div>
+
+                            <div className="flex items-center gap-4">
+                                <div className="lg:hidden">
+                                    <button onClick={() => setIsCalculatorOpen(true)} className="bg-brand-pink text-white px-4 py-2 rounded-full text-xs font-bold">Kalkulace</button>
+                                </div>
+                                <button 
+                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                    className="lg:hidden w-10 h-10 flex items-center justify-center text-white"
+                                >
+                                    {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Mobile Menu Overlay */}
+                        <AnimatePresence>
+                            {isMobileMenuOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="lg:hidden bg-black/95 border-b border-white/10 overflow-hidden"
+                                >
+                                    <div className="flex flex-col p-6 gap-6">
+                                        <button 
+                                            onClick={() => { scrollToSection('about'); setIsMobileMenuOpen(false); }} 
+                                            className="text-sm font-bold uppercase tracking-widest text-left hover:text-brand-pink transition-colors"
+                                        >
+                                            O nás
+                                        </button>
+                                        <button 
+                                            onClick={() => { scrollToSection('services'); setIsMobileMenuOpen(false); }} 
+                                            className="text-sm font-bold uppercase tracking-widest text-left hover:text-brand-pink transition-colors"
+                                        >
+                                            Služby
+                                        </button>
+                                        <button 
+                                            onClick={() => { scrollToSection('contact'); setIsMobileMenuOpen(false); }} 
+                                            className="text-sm font-bold uppercase tracking-widest text-left hover:text-brand-pink transition-colors"
+                                        >
+                                            Kontakt
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </nav>
+
+                    {/* Hero Section */}
+                    <header className="relative h-[calc(100vh-64px)] lg:h-[calc(100vh-152px)] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 z-0">
+                            <img 
+                                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=2000" 
+                                alt="Modern Private House"
+                                className="w-full h-full object-cover opacity-40"
+                                referrerPolicy="no-referrer"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#121212]"></div>
+                        </div>
+                        
+                        <div className="relative z-10 text-center px-4 max-w-5xl">
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 1 }}
+                            >
+                                <h1 className="text-5xl md:text-8xl font-serif font-bold mb-8 leading-tight">
+                                    Rekonstrukce bytů a domů <br />
+                                    <span className="text-brand-pink">Za 30 dní</span> <br />
+                                    Se zárukou 24 měsíců
+                                </h1>
+                                <div className="flex items-center justify-center gap-2 text-zinc-400 text-lg md:text-xl mb-12">
+                                    <MapPin className="w-5 h-5 text-brand-pink" />
+                                    <span>Lokalita: Praha, Hradec Králové a okolí</span>
+                                </div>
+                                <motion.button 
+                                    animate={{ y: [0, 10, 0] }}
+                                    transition={{ repeat: Infinity, duration: 2 }}
+                                    onClick={() => scrollToSection('about')}
+                                    className="mx-auto"
+                                >
+                                    <ChevronDown className="w-10 h-10 text-white/50" />
+                                </motion.button>
+                            </motion.div>
+                        </div>
+                    </header>
+
+                    {/* About Section */}
+                    <section id="about" className="py-32 px-6 bg-[#1a1a1a]">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                                <motion.div
+                                    initial={{ opacity: 0, x: -30 }}
+                                    whileInView={{ opacity: 1, x: 0 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <h2 className="text-4xl md:text-5xl font-serif font-bold mb-8">O nás</h2>
+                                    <div className="space-y-6 text-zinc-400 text-lg leading-relaxed">
+                                        <p>
+                                            Firma <span className="text-white font-bold">DomFix</span> se zaměřuje na profesionální rekonstrukce bytů a domů v Praze, Hradci Králové a okolí. 
+                                            Na trhu působíme již řadu let a za tu dobu jsme zrealizovali přes 2000 m² kvalitně zrekonstruovaných prostor.
+                                        </p>
+                                        <p>
+                                            Naší prioritou je precizní práce, spolehlivost a férový přístup. Každý projekt bereme jako závazek 
+                                            – od prvního návrhu až po předání hotového interiéru dbáme na detail, čistotu a vaše maximální pohodlí.
+                                        </p>
+                                        <p>
+                                            Cenu stanovujeme hned na začátku a garantujeme, že se během rekonstrukce nezmění. 
+                                            Díky tomu máte jistotu, že vše proběhne transparentně a bez nepříjemných překvapení.
+                                        </p>
+                                    </div>
+                                </motion.div>
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    className="relative"
+                                >
+                                    <div className="aspect-[4/5] rounded-3xl overflow-hidden border border-white/10">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1000" 
+                                            alt="Modern Residential Interior" 
+                                            className="w-full h-full object-cover"
+                                            referrerPolicy="no-referrer"
+                                        />
+                                    </div>
+                                    <div className="absolute -bottom-8 -left-8 bg-brand-pink p-8 rounded-2xl shadow-2xl hidden md:block">
+                                        <div className="text-2xl font-bold mb-1 uppercase tracking-tight">Dispoziční</div>
+                                        <div className="text-sm font-medium opacity-80 uppercase tracking-widest">řešení & návrh</div>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Why Us Section */}
+                    <section className="py-32 px-6">
+                        <div className="max-w-7xl mx-auto">
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-center mb-24">Proč právě nás</h2>
+                            
+                            <div className="space-y-32">
+                                {[
+                                    { 
+                                        image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=1200",
+                                        title: "Více než 5 let zkušeností", 
+                                        desc: "Pracujeme precizně, čistě a s důrazem na detail. Naše zkušenosti nám umožňují předvídat problémy a řešit je dříve, než nastanou.",
+                                        icon: Trophy
+                                    },
+                                    { 
+                                        image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1200",
+                                        title: "Spolehlivost a férový přístup", 
+                                        desc: "Dodržujeme termíny, komunikujeme otevřeně a jednáme transparentně. Žádné skryté poplatky, žádné výmluvy.",
+                                        icon: Clock,
+                                        reverse: true
+                                    },
+                                    { 
+                                        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=1200",
+                                        title: "Komfort pro klienta", 
+                                        desc: "Staráme se o celý proces od návrhu až po předání hotového interiéru. Vy si jen užíváte výsledek.",
+                                        icon: Users
+                                    }
+                                ].map((item, i) => (
+                                    <motion.div 
+                                        key={i}
+                                        initial={{ opacity: 0, y: 50 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        className={`flex flex-col ${item.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-12 md:gap-24 items-center`}
+                                    >
+                                        <div className="w-full md:w-1/2">
+                                            <div className="aspect-video rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl">
+                                                <img 
+                                                    src={item.image} 
+                                                    alt={item.title} 
+                                                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                                                    referrerPolicy="no-referrer"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-full md:w-1/2 space-y-6">
+                                            <div className="w-12 h-12 bg-brand-pink/10 rounded-xl flex items-center justify-center">
+                                                <item.icon className="w-6 h-6 text-brand-pink" />
+                                            </div>
+                                            <h3 className="text-3xl font-bold">{item.title}</h3>
+                                            <p className="text-zinc-400 text-lg leading-relaxed">{item.desc}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            <div className="mt-32 text-center">
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    className="inline-flex flex-col md:flex-row items-center gap-6 bg-white/5 border border-white/10 p-8 md:p-12 rounded-[3rem]"
+                                >
+                                    <div className="w-16 h-16 bg-brand-pink rounded-full flex items-center justify-center shrink-0">
+                                        <ShieldCheck className="w-8 h-8 text-white" />
+                                    </div>
+                                    <div className="text-left">
+                                        <h4 className="text-2xl font-bold mb-2">Garantujeme neměnnost ceny</h4>
+                                        <p className="text-zinc-400">Pevná cena od začátku – žádná nepříjemná překvapení na konci projektu.</p>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Pricing Section */}
+                    <section id="services" className="py-32 px-6 bg-[#1a1a1a]">
+                        <div className="max-w-7xl mx-auto">
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-center mb-24">NAŠE CENY</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                {/* Package 1 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className="bg-white rounded-[2.5rem] overflow-hidden text-black flex flex-col shadow-2xl border border-white/5"
+                                >
+                                    <div className="h-72 overflow-hidden relative group">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&q=80&w=1200" 
+                                            alt="Lite Basic Renovation" 
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            referrerPolicy="no-referrer"
+                                        />
+                                        <div className="absolute top-6 right-6 bg-brand-pink text-white px-4 py-2 rounded-full font-bold text-sm">
+                                            Základní
+                                        </div>
+                                    </div>
+                                    <div className="p-10 flex-grow">
+                                        <div className="mb-8">
+                                            <div className="text-4xl font-bold mb-2">200€<span className="text-lg font-normal text-zinc-400">/m²</span></div>
+                                            <div className="text-brand-pink text-sm font-bold tracking-widest uppercase">„LITE“ základní balíček</div>
+                                        </div>
+                                        <ul className="space-y-4 text-sm text-zinc-600 mb-10">
+                                            <li className="flex items-start gap-3 p-4 bg-zinc-50 rounded-2xl">
+                                                <span className="text-brand-pink text-xl">👉</span>
+                                                <span className="leading-relaxed">Vhodné pro ty, kteří potřebují základní modernizaci bytu <strong>bez zásahu do elektroinstalace</strong>.</span>
+                                            </li>
+                                            {[
+                                                "Demontážní práce (dlažba, podlaha, dveře, sanita)",
+                                                "Příprava stěn (penetrace, malování)",
+                                                "Koupelna na klíč",
+                                                "Jolly hrany",
+                                                "Pokládka obkladů a dlažby",
+                                                "Zděná sprchová vanička nebo obložená vana",
+                                                "Připojení sanity",
+                                                "Pokládka plovoucí podlahy, lepení MDF lišt",
+                                                "Montáž obložkových zárubní a dveří",
+                                                "Stavební materiál + dovoz",
+                                                "Odvoz a likvidace odpadu"
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3">
+                                                    <Check className="w-4 h-4 text-[#00c853] shrink-0" />
+                                                    <span>{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            onClick={() => setIsModalOpen(true)}
+                                            className="w-full bg-black text-white py-5 rounded-2xl font-bold hover:bg-brand-pink transition-all shadow-lg"
+                                        >
+                                            Mám zájem
+                                        </button>
+                                    </div>
+                                </motion.div>
+
+                                {/* Package 2 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.2 }}
+                                    className="bg-white rounded-[2.5rem] text-black flex flex-col shadow-2xl relative border border-white/5"
+                                >
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10 bg-[#00c853] text-white px-6 py-2 rounded-full font-bold text-sm shadow-xl whitespace-nowrap uppercase tracking-widest">
+                                        MUST HAVE
+                                    </div>
+                                    <div className="h-72 overflow-hidden rounded-t-[2.5rem] relative group">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?auto=format&fit=crop&q=80&w=1200" 
+                                            alt="Full Basic Renovation" 
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            referrerPolicy="no-referrer"
+                                        />
+                                        <div className="absolute top-6 right-6 bg-brand-pink text-white px-4 py-2 rounded-full font-bold text-sm">
+                                            Kompletní
+                                        </div>
+                                    </div>
+                                    <div className="p-10 flex-grow">
+                                        <div className="mb-8">
+                                            <div className="text-4xl font-bold mb-2">320€<span className="text-lg font-normal text-zinc-400">/m²</span></div>
+                                            <div className="text-brand-pink text-sm font-bold tracking-widest uppercase">„FULL“ základní balíček</div>
+                                        </div>
+                                        <ul className="space-y-4 text-sm text-zinc-600 mb-10">
+                                            <li className="flex items-start gap-3 p-4 bg-zinc-50 rounded-2xl">
+                                                <span className="text-brand-pink text-xl">👉</span>
+                                                <span className="leading-relaxed">Vhodné pro ty, kteří chtějí kompletní stavební rekonstrukci včetně všech rozvodů.</span>
+                                            </li>
+                                            {[
+                                                "Likvidace starého nábytku",
+                                                "Demontážní práce (dlažba, podlaha, sanita)",
+                                                "Nová elektroinstalace + materiál",
+                                                "Rozvody vody a odpadu",
+                                                "SDK stropy",
+                                                "Příprava stěn (stěrkování, malování)",
+                                                "Koupelna na klíč",
+                                                "Jolly hrany",
+                                                "Pokládka obkladů a dlažby",
+                                                "Zděný sprchový kout nebo obložená vana",
+                                                "Pokládka plovoucí podlahy, lepení MDF lišt",
+                                                "Montáž obložkových zárubní a dveří",
+                                                "Stavební materiál + dovoz",
+                                                "Odvoz a likvidace odpadu"
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3">
+                                                    <Check className="w-4 h-4 text-[#00c853] shrink-0" />
+                                                    <span>{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            onClick={() => setIsModalOpen(true)}
+                                            className="w-full bg-[#00c853] text-white py-5 rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg"
+                                        >
+                                            Mám zájem
+                                        </button>
+                                    </div>
+                                </motion.div>
+
+                                {/* Package 3 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.3 }}
+                                    className="bg-white rounded-[2.5rem] overflow-hidden text-black flex flex-col shadow-2xl border border-white/5"
+                                >
+                                    <div className="h-72 overflow-hidden relative group">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1613545325278-f24b0cae1224?auto=format&fit=crop&q=80&w=1200" 
+                                            alt="Lite Turnkey Renovation" 
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            referrerPolicy="no-referrer"
+                                        />
+                                        <div className="absolute top-6 right-6 bg-brand-pink text-white px-4 py-2 rounded-full font-bold text-sm">
+                                            Na klíč Lite
+                                        </div>
+                                    </div>
+                                    <div className="p-10 flex-grow">
+                                        <div className="mb-8">
+                                            <div className="text-4xl font-bold mb-2">450€<span className="text-lg font-normal text-zinc-400">/m²</span></div>
+                                            <div className="text-brand-pink text-sm font-bold tracking-widest uppercase">„LITE“ balíček na klíč</div>
+                                        </div>
+                                        <ul className="space-y-4 text-sm text-zinc-600 mb-10">
+                                            <li className="flex items-start gap-3 p-4 bg-zinc-50 rounded-2xl">
+                                                <span className="text-brand-pink text-xl">👉</span>
+                                                <span className="leading-relaxed">Vhodné pro ty, kteří mají nedokončený byt, <strong>neplánují měnit elektroinstalaci</strong>.</span>
+                                            </li>
+                                            {[
+                                                "Návrh designu a projektová dokumentace",
+                                                "Výběr a specifikace všech povrchových materiálů",
+                                                "Demontážní práce",
+                                                "Příprava stěn (penetrace, malování)",
+                                                "Koupelna na klíč",
+                                                "Jolly hrany",
+                                                "Pokládka obkladů a dlažby",
+                                                "Zděná sprchová vanička nebo obložená vana",
+                                                "Pokládka plovoucí podlahy, lepení MDF lišt",
+                                                "Montáž obložkových zárubní a dveří",
+                                                "Stavební materiál + dovoz",
+                                                "Odvoz a likvidace odpadu"
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3">
+                                                    <Check className="w-4 h-4 text-[#00c853] shrink-0" />
+                                                    <span>{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            onClick={() => setIsModalOpen(true)}
+                                            className="w-full bg-black text-white py-5 rounded-2xl font-bold hover:bg-brand-pink transition-all shadow-lg"
+                                        >
+                                            Mám zájem
+                                        </button>
+                                    </div>
+                                </motion.div>
+
+                                {/* Package 4 */}
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.4 }}
+                                    className="bg-white rounded-[2.5rem] overflow-hidden text-black flex flex-col shadow-2xl border border-white/5"
+                                >
+                                    <div className="h-72 overflow-hidden relative group">
+                                        <img 
+                                            src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1200" 
+                                            alt="Full Turnkey Renovation" 
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            referrerPolicy="no-referrer"
+                                        />
+                                        <div className="absolute top-6 right-6 bg-brand-pink text-white px-4 py-2 rounded-full font-bold text-sm">
+                                            Na klíč Full
+                                        </div>
+                                    </div>
+                                    <div className="p-10 flex-grow">
+                                        <div className="mb-8">
+                                            <div className="text-4xl font-bold mb-2">550€<span className="text-lg font-normal text-zinc-400">/m²</span></div>
+                                            <div className="text-brand-pink text-sm font-bold tracking-widest uppercase">„FULL“ balíček na klíč</div>
+                                        </div>
+                                        <ul className="space-y-4 text-sm text-zinc-600 mb-10">
+                                            <li className="flex items-start gap-3 p-4 bg-zinc-50 rounded-2xl">
+                                                <span className="text-brand-pink text-xl">👉</span>
+                                                <span className="leading-relaxed">Ideální řešení pro klienty, kteří chtějí převzít hotový byt připravený k bydlení.</span>
+                                            </li>
+                                            {[
+                                                "Designový návrh a kompletní projekt",
+                                                "Výběr a specifikace všech materiálů a nábytku",
+                                                "Likvidace starého nábytku",
+                                                "Demontážní práce",
+                                                "Nová elektroinstalace + materiál",
+                                                "Dodávka a montáž klimatizace",
+                                                "Rozvody vody a odpadu",
+                                                "SDK stropy",
+                                                "Příprava stěn (stěrkování, malování)",
+                                                "Koupelna na klíč",
+                                                "Jolly hrany",
+                                                "Pokládka obkladů a dlažby",
+                                                "Zděná sprchová vanička nebo obložená vana",
+                                                "Pokládka plovoucí podlahy, lepení MDF lišt",
+                                                "Montáž obložkových zárubní a dveří",
+                                                "Stavební materiál + dovoz",
+                                                "Odvoz a likvidace odpadu"
+                                            ].map((item, i) => (
+                                                <li key={i} className="flex items-center gap-3">
+                                                    <Check className="w-4 h-4 text-[#00c853] shrink-0" />
+                                                    <span>{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button 
+                                            onClick={() => setIsModalOpen(true)}
+                                            className="w-full bg-black text-white py-5 rounded-2xl font-bold hover:bg-brand-pink transition-all shadow-lg"
+                                        >
+                                            Mám zájem
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Contact Section */}
+                    <section id="contact" className="py-32 px-6 bg-[#1a1a1a]">
+                        <div className="max-w-7xl mx-auto">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                                <div>
+                                    <h2 className="text-5xl font-serif font-bold mb-8 underline decoration-brand-pink underline-offset-8">Kontaktujte nás</h2>
+                                    <p className="text-zinc-400 text-lg mb-12 max-w-md">
+                                        Máte dotaz nebo zájem o nezávaznou konzultaci? Jsme tu pro vás. Ozvěte se nám a společně probereme váš projekt.
+                                    </p>
+                                    
+                                    <div className="space-y-8">
+                                        <a href="tel:+420602882855" className="flex items-center gap-6 group">
+                                            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-brand-pink transition-all">
+                                                <Phone className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-zinc-500 uppercase tracking-widest font-bold">Telefon</span>
+                                                <span className="text-xl font-bold group-hover:text-brand-pink transition-colors">+420 602 882 855</span>
+                                            </div>
+                                        </a>
+
+                                        <a href="mailto:domfix.cz@gmail.com" className="flex items-center gap-6 group">
+                                            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-brand-pink transition-all">
+                                                <Mail className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-zinc-500 uppercase tracking-widest font-bold">Email</span>
+                                                <span className="text-xl font-bold group-hover:text-brand-pink transition-colors">domfix.cz@gmail.com</span>
+                                            </div>
+                                        </a>
+
+                                        <a href="https://instagram.com/domfix.cz" target="_blank" rel="noreferrer" className="flex items-center gap-6 group">
+                                            <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-brand-pink transition-all">
+                                                <Instagram className="w-6 h-6 text-white" />
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-xs text-zinc-500 uppercase tracking-widest font-bold">Instagram</span>
+                                                <span className="text-xl font-bold group-hover:text-brand-pink transition-colors">domfix.cz</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem]">
+                                    <h3 className="text-2xl font-bold mb-8">Napište nám přímo</h3>
+                                    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(true); }}>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="block text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Jméno</label>
+                                                <input type="text" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors" placeholder="Vaše jméno" required />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Telefon</label>
+                                                <input type="tel" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors" placeholder="+420 ..." required />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Zpráva</label>
+                                            <textarea rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors" placeholder="O jakou rekonstrukci máte zájem?" required></textarea>
+                                        </div>
+                                        <button type="submit" className="w-full bg-brand-pink text-white py-5 rounded-2xl font-bold hover:bg-brand-pink/90 transition-all shadow-lg">
+                                            Odeslat zprávu
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <footer className="py-12 border-t border-white/5 text-center">
+                        <p className="text-zinc-600 text-sm tracking-widest uppercase">
+                            © 2026 DomFix. Všechna práva vyhrazena.
+                        </p>
+                    </footer>
+
+                    {/* Calculator Modal */}
+                    <AnimatePresence>
+                        {isCalculatorOpen && (
+                            <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={() => setIsCalculatorOpen(false)}
+                                    className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                                />
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    className="relative w-full max-w-xl bg-[#1a1a1a] rounded-[2rem] border border-white/10 overflow-hidden shadow-2xl max-h-[95vh] flex flex-col"
+                                >
+                                    <button 
+                                        onClick={() => setIsCalculatorOpen(false)}
+                                        className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all z-10"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+
+                                    <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
+                                        <div className="mb-6">
+                                            <div className="w-10 h-10 bg-brand-pink/20 rounded-lg flex items-center justify-center mb-4">
+                                                <Trophy className="w-5 h-5 text-brand-pink" />
+                                            </div>
+                                            <h2 className="text-2xl font-serif font-bold mb-2">Kalkulačka rekonstrukce</h2>
+                                            <p className="text-zinc-400 text-sm">Získejte okamžitý odhad ceny vaší rekonstrukce.</p>
+                                        </div>
+
+                                        <div className="space-y-6">
+                                            <div>
+                                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-3 font-bold">Vyberte balíček</label>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    {packages.map((pkg) => (
+                                                        <button
+                                                            key={pkg.name}
+                                                            onClick={() => setCalcPackage(pkg.price)}
+                                                            className={`p-3 rounded-xl border text-left transition-all ${
+                                                                calcPackage === pkg.price 
+                                                                    ? 'bg-brand-pink/10 border-brand-pink text-white' 
+                                                                    : 'bg-white/5 border-white/10 text-zinc-400 hover:border-white/20'
+                                                            }`}
+                                                        >
+                                                            <div className="font-bold text-xs mb-0.5">{pkg.name}</div>
+                                                            <div className="text-[10px] opacity-60">{pkg.price} € / m²</div>
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <div className="flex justify-between items-center mb-3">
+                                                    <label className="block text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Plocha bytu</label>
+                                                    <span className="text-brand-pink font-bold">{calcM2} m²</span>
+                                                </div>
+                                                <input 
+                                                    type="range" 
+                                                    min="10" 
+                                                    max="200" 
+                                                    step="1"
+                                                    value={calcM2}
+                                                    onChange={(e) => setCalcM2(parseInt(e.target.value))}
+                                                    className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-brand-pink"
+                                                />
+                                                <div className="flex justify-between text-[9px] text-zinc-500 mt-2 uppercase tracking-widest font-bold">
+                                                    <span>10 m²</span>
+                                                    <span>200 m²</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-brand-pink/10 border border-brand-pink/20 p-6 rounded-2xl text-center">
+                                                <div className="text-[10px] uppercase tracking-widest text-brand-pink mb-1 font-bold">Předpokládaná cena</div>
+                                                <div className="text-4xl font-bold text-white mb-1">
+                                                    {(calcM2 * calcPackage).toLocaleString()} €
+                                                </div>
+                                                <div className="text-zinc-400 text-[11px]">
+                                                    Včetně materiálu a práce
+                                                </div>
+                                            </div>
+
+                                            <button 
+                                                onClick={() => {
+                                                    setIsCalculatorOpen(false);
+                                                    setIsModalOpen(true);
+                                                }}
+                                                className="w-full bg-brand-pink text-white py-4 rounded-xl font-bold hover:bg-brand-pink/90 transition-all shadow-lg text-sm"
+                                            >
+                                                Mám zájem o přesnou nabídku
+                                            </button>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Lead Capture Popup */}
+                    <AnimatePresence>
+                        {isModalOpen && (
+                            <div className="fixed inset-0 z-[100] flex items-center justify-center px-6">
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                                />
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    className="relative w-full max-w-lg bg-[#1a1a1a] rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl"
+                                >
+                                    <button 
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all z-10"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+
+                                    <div className="p-10 md:p-12">
+                                        <div className="mb-8">
+                                            <div className="w-12 h-12 bg-brand-pink/20 rounded-xl flex items-center justify-center mb-6">
+                                                <Send className="w-6 h-6 text-brand-pink" />
+                                            </div>
+                                            <h2 className="text-3xl font-serif font-bold mb-4">Získejte kalkulaci zdarma</h2>
+                                            <p className="text-zinc-400">Zanechte nám svůj kontakt a my se vám ozveme do 24 hodin s nezávaznou nabídkou.</p>
+                                        </div>
+
+                                        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setIsModalOpen(false); }}>
+                                            <div>
+                                                <label className="block text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Jméno</label>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="Vaše jméno"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Telefon</label>
+                                                <input 
+                                                    type="tel" 
+                                                    placeholder="+420 000 000 000"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors"
+                                                    required
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs uppercase tracking-widest text-zinc-500 mb-2 font-bold">Email</label>
+                                                <input 
+                                                    type="email" 
+                                                    placeholder="vas@email.cz"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors"
+                                                    required
+                                                />
+                                            </div>
+                                            <button 
+                                                type="submit"
+                                                className="w-full bg-brand-pink text-white py-5 rounded-2xl font-bold hover:bg-brand-pink/90 transition-all shadow-lg mt-4"
+                                            >
+                                                Odeslat žádost
+                                            </button>
+                                        </form>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Floating Mobile Contact Button */}
+                    <div className="lg:hidden fixed bottom-6 right-6 z-[60] flex flex-col gap-4">
+                        <motion.button
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            onClick={() => setIsCalculatorOpen(true)}
+                            className="w-14 h-14 bg-white text-black rounded-full flex items-center justify-center shadow-2xl border border-white/10"
+                        >
+                            <Trophy className="w-6 h-6" />
+                        </motion.button>
+                        <motion.a
+                            initial={{ scale: 0, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ delay: 0.1 }}
+                            href="tel:+420602882855"
+                            className="w-14 h-14 bg-brand-pink text-white rounded-full flex items-center justify-center shadow-2xl shadow-brand-pink/40"
+                        >
+                            <Phone className="w-6 h-6" />
+                        </motion.a>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
