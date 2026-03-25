@@ -74,25 +74,60 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
-        const { motion, AnimatePresence } = FramerMotion;
+        
+        // Robust access to Framer Motion
+        const motionFallback = (Component) => (props) => {
+            const { initial, animate, exit, transition, whileHover, whileTap, viewport, ...rest } = props;
+            return <Component {...rest} />;
+        };
+        const motion = window.FramerMotion ? window.FramerMotion.motion : { 
+            div: motionFallback('div'),
+            button: motionFallback('button'),
+            a: motionFallback('a'),
+            section: motionFallback('section'),
+            h1: motionFallback('h1'),
+            h2: motionFallback('h2'),
+            h3: motionFallback('h3'),
+            p: motionFallback('p'),
+            span: motionFallback('span')
+        };
+        const AnimatePresence = window.FramerMotion ? window.FramerMotion.AnimatePresence : ({children}) => children;
+
+        // Robust access to Lucide Icons
+        const LucideIcons = window.LucideReact || {};
         const { 
-            Check, 
-            Mail,
-            Instagram, 
-            Phone, 
-            Send, 
-            Twitter, 
-            Clock, 
-            ShieldCheck, 
-            MapPin, 
-            Users, 
-            HeartHandshake, 
-            Trophy,
-            ChevronDown,
-            X,
-            Menu,
-            Home
-        } = LucideReact;
+            Check = () => null, 
+            Mail = () => null,
+            Instagram = () => null, 
+            Phone = () => null, 
+            Send = () => null, 
+            Twitter = () => null, 
+            Clock = () => null, 
+            ShieldCheck = () => null, 
+            MapPin = () => null, 
+            Users = () => null, 
+            HeartHandshake = () => null, 
+            Trophy = () => null,
+            ChevronDown = () => null,
+            X = () => null,
+            Menu = () => null,
+            Home = () => null,
+            Star = () => null,
+            Shield = () => null,
+            ChevronRight = () => null,
+            Plus = () => null,
+            Minus = () => null,
+            MessageSquare = () => null,
+            User = () => null,
+            Settings = () => null,
+            Wrench = () => null,
+            Paintbrush = () => null,
+            Hammer = () => null,
+            Layout = () => null,
+            Lightbulb = () => null,
+            Sparkles = () => null,
+            ArrowRight = () => null
+        } = LucideIcons;
 
         function App() {
             const [isModalOpen, setIsModalOpen] = useState(false);
@@ -111,30 +146,35 @@
             useEffect(() => {
                 const timer = setTimeout(() => {
                     setIsModalOpen(true);
-                }, 15000); // Show popup after 15 seconds
+                }, 15000);
                 return () => clearTimeout(timer);
             }, []);
 
             const scrollToSection = (id) => {
                 const element = document.getElementById(id);
                 if (element) {
-                    const offset = 100; // Offset for fixed header
-                    const bodyRect = document.body.getBoundingClientRect().top;
-                    const elementRect = element.getBoundingClientRect().top;
-                    const elementPosition = elementRect - bodyRect;
-                    const offsetPosition = elementPosition - offset;
-
+                    const headerOffset = 70;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + (window.pageYOffset || window.scrollY) - headerOffset;
+                  
                     window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
+                         top: offsetPosition,
+                         behavior: "smooth"
                     });
+                    
+                    // Force jump if smooth scroll didn't happen
+                    setTimeout(() => {
+                        if (Math.abs(window.scrollY - offsetPosition) > 10) {
+                            window.scrollTo(0, offsetPosition);
+                        }
+                    }, 500);
                 }
             };
 
             return (
                 <div className="min-h-screen bg-[#121212] text-white font-sans selection:bg-brand-pink selection:text-white pt-16 lg:pt-[152px]">
                     {/* Navigation */}
-                    <nav className="fixed top-0 w-full z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
+                    <nav className="fixed top-0 w-full z-[9999] bg-black/95 backdrop-blur-md border-b border-white/5">
                         {/* Top Info Bar - Desktop Only */}
                         <div className="hidden lg:grid grid-cols-[1.5fr_0.5fr_1.5fr_1.5fr_0.5fr] border-b border-white/10 h-24">
                             {/* Logo & Tagline */}
@@ -188,8 +228,9 @@
                             {/* Menu Toggle / Action */}
                             <div className="flex items-center justify-center">
                                 <button 
+                                    type="button"
                                     onClick={() => setIsCalculatorOpen(true)}
-                                    className="w-14 h-14 rounded-full bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center hover:bg-brand-pink transition-all group"
+                                    className="w-14 h-14 rounded-full bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center hover:bg-brand-pink transition-all group cursor-pointer relative z-[100]"
                                     title="Kalkulačka"
                                 >
                                     <Trophy className="w-7 h-7 text-brand-pink group-hover:text-black transition-colors" />
@@ -198,7 +239,7 @@
                         </div>
 
                         {/* Main Nav - Mobile & Sticky Desktop */}
-                        <div className="max-w-7xl mx-auto px-6 h-16 lg:h-14 flex items-center justify-between">
+                        <div className="max-w-7xl mx-auto px-6 h-16 lg:h-14 flex items-center justify-between relative z-[110]">
                             <div className="flex items-center gap-2 lg:hidden">
                                 <div className="w-8 h-8 bg-white flex items-center justify-center rounded-lg">
                                     <span className="text-black font-bold text-lg">DF</span>
@@ -207,57 +248,123 @@
                             </div>
                             
                             <div className="hidden lg:flex items-center gap-8 mx-auto">
-                                <button onClick={() => scrollToSection('about')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors">O nás</button>
-                                <button onClick={() => scrollToSection('services')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors">Služby</button>
-                                <button onClick={() => scrollToSection('contact')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors">Kontakt</button>
+                                <button type="button" onClick={() => scrollToSection('about')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors cursor-pointer py-2 px-4">O nás</button>
+                                <button type="button" onClick={() => scrollToSection('services')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors cursor-pointer py-2 px-4">Služby</button>
+                                <button type="button" onClick={() => scrollToSection('contact')} className="text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors cursor-pointer py-2 px-4">Kontakt</button>
                             </div>
 
                             <div className="flex items-center gap-4">
                                 <div className="lg:hidden">
-                                    <button onClick={() => setIsCalculatorOpen(true)} className="bg-brand-pink text-white px-4 py-2 rounded-full text-xs font-bold">Kalkulace</button>
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setIsCalculatorOpen(true)} 
+                                        onPointerDown={() => setIsCalculatorOpen(true)}
+                                        className="bg-brand-pink text-white px-4 py-2 rounded-full text-xs font-bold cursor-pointer"
+                                    >
+                                        Kalkulace
+                                    </button>
                                 </div>
                                 <button 
+                                    type="button"
                                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                    className="lg:hidden w-10 h-10 flex items-center justify-center text-white"
+                                    onPointerDown={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                    className="lg:hidden w-10 h-10 flex items-center justify-center text-white cursor-pointer relative z-[120]"
+                                    aria-label="Toggle Menu"
                                 >
                                     {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                                 </button>
                             </div>
                         </div>
 
-                        {/* Mobile Menu Overlay */}
-                        <AnimatePresence>
-                            {isMobileMenuOpen && (
-                                <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    className="lg:hidden bg-black/95 border-b border-white/10 overflow-hidden"
-                                >
-                                    <div className="flex flex-col p-6 gap-6">
+                        </div>
+                    </nav>
+
+                    {/* Full-screen Mobile Menu Overlay */}
+                    <AnimatePresence>
+                        {isMobileMenuOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, x: '100%' }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: '100%' }}
+                                transition={{ type: 'tween', duration: 0.3 }}
+                                className="fixed inset-0 z-[10000] bg-black lg:hidden flex flex-col"
+                            >
+                                <div className="flex items-center justify-between p-6 border-b border-white/10 bg-black">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 bg-white flex items-center justify-center rounded-lg">
+                                            <span className="text-black font-bold text-lg">DF</span>
+                                        </div>
+                                        <span className="font-bold text-lg tracking-tight">DomFix</span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
                                         <button 
-                                            onClick={() => { scrollToSection('about'); setIsMobileMenuOpen(false); }} 
-                                            className="text-sm font-bold uppercase tracking-widest text-left hover:text-brand-pink transition-colors"
+                                            type="button" 
+                                            onClick={() => { setIsCalculatorOpen(true); setIsMobileMenuOpen(false); }} 
+                                            onPointerDown={() => { setIsCalculatorOpen(true); setIsMobileMenuOpen(false); }}
+                                            className="bg-brand-pink text-white px-4 py-2 rounded-full text-xs font-bold cursor-pointer relative z-[10002]"
                                         >
-                                            O nás
+                                            Kalkulace
                                         </button>
                                         <button 
-                                            onClick={() => { scrollToSection('services'); setIsMobileMenuOpen(false); }} 
-                                            className="text-sm font-bold uppercase tracking-widest text-left hover:text-brand-pink transition-colors"
+                                            type="button"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            onPointerDown={() => setIsMobileMenuOpen(false)}
+                                            className="w-10 h-10 flex items-center justify-center text-white bg-white/5 rounded-full border border-white/10 relative z-[10002]"
                                         >
-                                            Služby
-                                        </button>
-                                        <button 
-                                            onClick={() => { scrollToSection('contact'); setIsMobileMenuOpen(false); }} 
-                                            className="text-sm font-bold uppercase tracking-widest text-left hover:text-brand-pink transition-colors"
-                                        >
-                                            Kontakt
+                                            <X className="w-6 h-6" />
                                         </button>
                                     </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </nav>
+                                </div>
+                                <div className="flex flex-col p-6 gap-2 overflow-y-auto bg-black flex-grow relative z-[10001]">
+                                    <button 
+                                        type="button"
+                                        onClick={() => { scrollToSection('about'); setIsMobileMenuOpen(false); }} 
+                                        onPointerDown={() => { scrollToSection('about'); setIsMobileMenuOpen(false); }}
+                                        className="w-full text-left text-2xl font-bold uppercase tracking-widest text-white hover:text-brand-pink active:bg-white/10 transition-all cursor-pointer py-8 px-4 border-b border-white/5 flex items-center gap-5 relative z-[10002]"
+                                    >
+                                        <Home className="w-7 h-7 text-brand-pink" />
+                                        O nás
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => { scrollToSection('services'); setIsMobileMenuOpen(false); }} 
+                                        onPointerDown={() => { scrollToSection('services'); setIsMobileMenuOpen(false); }}
+                                        className="w-full text-left text-2xl font-bold uppercase tracking-widest text-white hover:text-brand-pink active:bg-white/10 transition-all cursor-pointer py-8 px-4 border-b border-white/5 flex items-center gap-5 relative z-[10002]"
+                                    >
+                                        <Trophy className="w-7 h-7 text-brand-pink" />
+                                        Služby
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => { scrollToSection('contact'); setIsMobileMenuOpen(false); }} 
+                                        onPointerDown={() => { scrollToSection('contact'); setIsMobileMenuOpen(false); }}
+                                        className="w-full text-left text-2xl font-bold uppercase tracking-widest text-white hover:text-brand-pink active:bg-white/10 transition-all cursor-pointer py-8 px-4 flex items-center gap-5 relative z-[10002]"
+                                    >
+                                        <Mail className="w-7 h-7 text-brand-pink" />
+                                        Kontakt
+                                    </button>
+                                    
+                                    <div className="mt-auto p-8 bg-white/5 rounded-[2.5rem] border border-white/10 mb-8">
+                                        <div className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mb-6">Rychlý kontakt</div>
+                                        <div className="space-y-6">
+                                            <a href="tel:+420602882855" className="flex items-center gap-5 text-xl font-bold hover:text-brand-pink transition-colors">
+                                                <div className="w-12 h-12 rounded-2xl bg-brand-pink/10 flex items-center justify-center">
+                                                    <Phone className="w-5 h-5 text-brand-pink" />
+                                                </div>
+                                                +420 602 882 855
+                                            </a>
+                                            <a href="mailto:domfix.cz@gmail.com" className="flex items-center gap-5 text-base font-medium text-zinc-400 hover:text-white transition-colors">
+                                                <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
+                                                    <Mail className="w-5 h-5 text-white" />
+                                                </div>
+                                                domfix.cz@gmail.com
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
                     {/* Hero Section */}
                     <header className="relative h-[calc(100vh-64px)] lg:h-[calc(100vh-152px)] flex items-center justify-center overflow-hidden">
@@ -536,8 +643,9 @@
                                             ))}
                                         </ul>
                                         <button 
+                                            type="button"
                                             onClick={() => setIsModalOpen(true)}
-                                            className="w-full bg-[#00c853] text-white py-5 rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg"
+                                            className="w-full bg-[#00c853] text-white py-5 rounded-2xl font-bold hover:opacity-90 transition-all shadow-lg cursor-pointer"
                                         >
                                             Mám zájem
                                         </button>
